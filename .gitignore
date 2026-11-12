@@ -1,0 +1,20 @@
+# Executables
+false_sharing
+numa_sweep
+compare_numa
+*.exe
+*.out
+
+# Object files
+*.o
+*.obj
+
+# Python caches
+__pycache__/
+*.pyc
+
+# OS & Editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
