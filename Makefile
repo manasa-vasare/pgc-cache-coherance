@@ -4,21 +4,23 @@ CC = gcc
 CFLAGS = -O2 -Wall -fopenmp
 PYTHON = python3
 
+SRCDIR = src
+
 TARGETS = false_sharing numa_sweep compare_numa
 
 all: $(TARGETS)
 
-false_sharing: false_sharing.c
+false_sharing: $(SRCDIR)/false_sharing.c
 	$(CC) $(CFLAGS) -o $@ $<
 
-numa_sweep: numa_sweep.c
+numa_sweep: $(SRCDIR)/numa_sweep.c
 	$(CC) $(CFLAGS) -o $@ $<
 
-compare_numa: compare_numa.c
+compare_numa: $(SRCDIR)/compare_numa.c
 	$(CC) $(CFLAGS) -o $@ $<
 
 sim:
-	$(PYTHON) coherence_sim.py 1000
+	$(PYTHON) $(SRCDIR)/coherence_sim.py 1000
 
 run: all
 	@echo "=== Running False Sharing (2 threads) ==="

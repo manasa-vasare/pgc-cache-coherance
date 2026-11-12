@@ -11,10 +11,10 @@ echo -e "\n[1/5] Checking Hardware & NUMA Topology..."
 lscpu | grep -E "Socket|Core|Thread|NUMA" || true
 numactl --hardware || true
 
-echo -e "\n[2/5] Running Protocol Simulator (coherence_sim.py)..."
-python3 coherence_sim.py 1000
+echo -e "\n[2/5] Running Protocol Simulator (src/coherence_sim.py)..."
+python3 src/coherence_sim.py 1000
 
-echo -e "\n[3/5] Compiling C Benchmarks..."
+echo -e "\n[3/5] Compiling C Benchmarks from src/..."
 make clean
 make all
 

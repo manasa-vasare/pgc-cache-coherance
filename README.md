@@ -24,7 +24,8 @@ A comprehensive experimental study and benchmark suite analyzing **cache coheren
   - [6.2 Part B: False Sharing & Parallel Scalability](#62-part-b-false-sharing--parallel-scalability)
   - [6.3 Part C: NUMA Memory Placement Sweep](#63-part-c-numa-memory-placement-sweep)
 - [7. Observation & Comparison Summary](#7-observation--comparison-summary)
-- [8. Key Conclusions & Insights](#8-key-conclusions--insights)
+- [8. Terminal Verification Screenshots](#8-terminal-verification-screenshots)
+- [9. Key Conclusions & Insights](#9-key-conclusions--insights)
 
 ---
 
@@ -140,15 +141,25 @@ Empirical testing was conducted on an Ubuntu virtual machine configured with two
 
 ```
 .
+├── src/                    # Source code directory
+│   ├── coherence_sim.py    # Python 3 simulator for MSI, MESI, and MOESI protocols
+│   ├── false_sharing.c     # OpenMP C benchmark evaluating false sharing overhead
+│   ├── numa_sweep.c        # OpenMP C benchmark for 512 MB memory sweep across NUMA nodes
+│   └── compare_numa.c      # Combined benchmark testing scalability (Table 1 & Table 2)
+├── images/                 # Execution verification screenshots from terminal
+│   ├── 01_environment_and_lscpu.png
+│   ├── 02_numa_hardware_topology.png
+│   ├── 03_protocol_simulator_trace.png
+│   ├── 04_simulation_totals_and_initial_runs.png
+│   ├── 05_compare_numa_benchmark_table1_table2.png
+│   ├── 06_false_sharing_repeated_runs.png
+│   └── 07_numa_sweep_repeated_runs.png
 ├── README.md               # Main project documentation & comprehensive analysis
 ├── RESULTS.md              # Detailed empirical data tables, raw metrics, and calculations
 ├── Makefile                # Automated compilation build script
 ├── run_experiments.sh      # Bash script to execute all benchmarks and record results
-├── coherence_sim.py        # Python 3 simulator for MSI, MESI, and MOESI protocols
-├── false_sharing.c         # OpenMP C benchmark evaluating false sharing overhead
-├── numa_sweep.c            # OpenMP C benchmark for 512 MB memory sweep across NUMA nodes
-├── compare_numa.c          # Combined benchmark testing scalability (Table 1 & Table 2)
-└── .gitignore              # Git ignore rules for build artifacts and executables
+├── LICENSE                 # MIT License
+└── .gitignore              # Git ignore rules for compiled C executables and object files
 ```
 
 ---
@@ -168,7 +179,9 @@ make all
 
 ### 2. Run Cache Coherence Simulator (1,000 Iterations):
 ```bash
-python3 coherence_sim.py 1000
+make sim
+# Or directly:
+python3 src/coherence_sim.py 1000
 ```
 
 ### 3. Run False Sharing Benchmark:
@@ -270,7 +283,34 @@ Workload: 512 MB memory sweep over 4 passes (stride = 64 bytes) comparing Local 
 
 ---
 
-## 8. Key Conclusions & Insights
+## 8. Terminal Verification Screenshots
+
+All benchmark executions were conducted in the Ubuntu 22.04 LTS VM:
+
+### 1. Environment Setup & CPU Layout
+![01 Environment Setup](images/01_environment_and_lscpu.png)
+
+### 2. NUMA Topology & Node Distances
+![02 NUMA Hardware](images/02_numa_hardware_topology.png)
+
+### 3. Protocol Simulator State Trace (MSI, MESI, MOESI)
+![03 Protocol Simulator Trace](images/03_protocol_simulator_trace.png)
+
+### 4. Simulation Totals & Initial Benchmark Runs
+![04 Simulation Totals](images/04_simulation_totals_and_initial_runs.png)
+
+### 5. Unified Benchmark (Table 1 Scalability & Table 2 Sweep)
+![05 Compare NUMA Benchmark](images/05_compare_numa_benchmark_table1_table2.png)
+
+### 6. False Sharing Repeated Runs (2 Threads Median)
+![06 False Sharing Repeated Runs](images/06_false_sharing_repeated_runs.png)
+
+### 7. NUMA Memory Sweep Repeated Runs (1T & 2T Local vs. Remote)
+![07 NUMA Sweep Repeated Runs](images/07_numa_sweep_repeated_runs.png)
+
+---
+
+## 9. Key Conclusions & Insights
 
 1. **Hardware Coherence Assures Correctness, Not Throughput:** In every test, the counter total matched the expected 100,000,000 increments. Hardware coherence guarantees memory safety, but unoptimized memory layout introduces severe performance degradation (up to 45% slower).
 2. **64-Byte Alignment is Crucial in Multi-threaded Programming:** False sharing can silently destroy the scalability of multi-threaded applications. Using 64-byte padding (`aligned_alloc(64, ...)` or compiler alignment attributes) restores near-perfect linear scaling ($2.00\times$ on 2 cores).
