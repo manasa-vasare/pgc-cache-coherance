@@ -211,7 +211,6 @@ pgc-cache-coherance/
 ├── run_experiments.sh         # Script to run all benchmarks
 ├── README.md                  # Comprehensive documentation and report
 ├── RESULTS.md                 # Supplementary detailed analysis
-├── LICENSE                    # MIT License
 └── .gitignore                 # Build artifacts exclusion
 ```
 
@@ -462,9 +461,3 @@ Synthesizing the core findings of the experiment as stated in **Section 11 of th
 3. **Cache Line Granularity & False Sharing:** Coherence operates on entire 64-byte cache lines. When two independent counters share a line, the line ping-pongs between core caches, producing **false sharing** and destroying scaling (costing up to a **45% performance penalty**). Padding counters onto separate cache lines completely eliminates this overhead, unlocking **$2.00\times$ exact linear speedup** on 2 threads and near-linear $2.99\times$ scaling on 4 threads.
 4. **NUMA Placement & Hardware Topology:** Memory attached to another node requires traversing the interconnect. In virtualized environments hosted on single-socket desktop hardware (Intel Core i5-13400), both virtual nodes share the same physical memory controller, resulting in near-identical steady-state times ($\approx 1.0\times$). Real remote-memory latency penalties require physical multi-socket server hardware.
 5. **Key Takeaway:** The choice of **data layout (padding/alignment)** and **thread/memory placement** matters as much as the underlying cache coherence protocol for achieving optimal scalability in parallel programs.
-
----
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
